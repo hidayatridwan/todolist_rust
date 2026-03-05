@@ -22,6 +22,9 @@ impl TodoService {
 
         let completed = query.parse_completed();
 
+        let sort_field = query.sort_field();
+        let sort_order = query.sort_order();
+
         let (todos, total_records) = TodoRepository::find_paginated(
             &state.db,
             user_id,
@@ -30,6 +33,8 @@ impl TodoService {
             query.search_field,
             query.search_value,
             completed,
+            sort_field,
+            sort_order,
         )
         .await
         .map_err(|e| {

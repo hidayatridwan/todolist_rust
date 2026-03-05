@@ -7,12 +7,15 @@ use crate::{
         model::{AuthResponse, LoginRequest, RefreshRequest, RegisterRequest},
         service::AuthService,
     },
+    utils::validation::validate_request,
 };
 
 pub async fn register(
     State(state): State<AppState>,
     Json(payload): Json<RegisterRequest>,
 ) -> Result<Json<AuthResponse>, AppError> {
+    validate_request(&payload)?;
+
     let res = AuthService::register(&state, payload).await?;
 
     Ok(Json(res))

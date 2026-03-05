@@ -15,6 +15,7 @@ use crate::{
         service::TodoService,
     },
     response::ApiResponse,
+    utils::validation::validate_request,
 };
 
 pub async fn todos(
@@ -45,6 +46,8 @@ pub async fn create_todo(
     request_id: RequestId,
     Json(payload): Json<CreateTodoRequest>,
 ) -> Result<ApiResponse<Todo>, AppError> {
+    validate_request(&payload)?;
+
     let todo = TodoService::create(&state, user.user_id, payload).await?;
 
     Ok(ApiResponse::new(todo, request_id.0))
@@ -57,6 +60,8 @@ pub async fn update_todo(
     request_id: RequestId,
     Json(payload): Json<UpdateTodoRequest>,
 ) -> Result<ApiResponse<Todo>, AppError> {
+    validate_request(&payload)?;
+
     let todo = TodoService::update(&state, user.user_id, todo_id, payload).await?;
 
     Ok(ApiResponse::new(todo, request_id.0))

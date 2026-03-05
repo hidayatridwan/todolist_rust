@@ -14,6 +14,8 @@ impl TodoRepository {
         search_field: Option<String>,
         search_value: Option<String>,
         completed: Option<Vec<bool>>,
+        sort_field: &str,
+        sort_order: &str,
     ) -> Result<(Vec<Todo>, i64), sqlx::Error> {
         let offset = (page - 1) * limit;
 
@@ -40,7 +42,10 @@ impl TodoRepository {
             }
         }
 
-        query_builder.push(" ORDER BY created_at DESC ");
+        query_builder.push(" ORDER BY ");
+        query_builder.push(sort_field);
+        query_builder.push(" ");
+        query_builder.push(sort_order);
         query_builder.push(" LIMIT ");
         query_builder.push_bind(limit);
         query_builder.push(" OFFSET ");
